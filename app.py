@@ -19,7 +19,6 @@ def cargar_datos():
     inmuebles = pd.read_csv(url, sep=';')
     inmuebles = inmuebles.drop_duplicates()
     
-    # AHORA INCLUIMOS 'lat-lon'
     columnas_utiles = ['property_type', 'place_with_parent_names', 'price_aprox_usd', 'surface_total_in_m2', 'rooms', 'lat-lon']
     df_limpio = inmuebles[columnas_utiles].copy()
     
@@ -53,8 +52,13 @@ barrio = st.sidebar.text_input("4. ¿Algún barrio o zona específica? (Opcional
 
 excluir = st.sidebar.text_input("5. ¿Querés excluir alguna zona? (Opcional)")
 
-# 4. Botón de Búsqueda y Lógica
+# 4. Botón de Búsqueda y Lógica (CON MEMORIA AGREGADA)
+# Guardamos en la "memoria" si el botón fue presionado
 if st.sidebar.button("Buscar Propiedades 🚀"):
+    st.session_state['buscar'] = True
+
+# Verificamos si la memoria recuerda que buscamos algo
+if st.session_state.get('buscar', False):
     df_filtrado = df_limpio.copy()
 
     if "Departamento" in opcion_tipo:
@@ -90,7 +94,6 @@ if st.sidebar.button("Buscar Propiedades 🚀"):
 
         st.markdown("#### 🗺️ Mapa de Ubicaciones (Top 100)")
         
-        # PROCESAMIENTO DEL MAPA IGUAL QUE EN EL COLAB
         if 'lat-lon' in df_filtrado.columns:
             df_filtrado[['lat', 'lon']] = df_filtrado['lat-lon'].str.split(',', expand=True).astype(float)
 
@@ -116,8 +119,8 @@ if st.sidebar.button("Buscar Propiedades 🚀"):
                         fill_opacity=0.6
                     ).add_to(mapa_propiedades)
 
-                # Mostramos el mapa interactivo en Streamlit
-                st_folium(mapa_propiedades, width=1000, height=500)
+                # El returned_objects=[] evita que interactuar con el mapa recargue toda la página
+                st_folium(mapa_propiedades, width=1000, height=500, returned_objects=[])
             else:
                 st.warning("🗺️ Las propiedades encontradas no tienen coordenadas geográficas válidas para mostrar en el mapa.")
         else:
