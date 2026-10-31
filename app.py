@@ -5,7 +5,6 @@ from streamlit_folium import st_folium
 
 # 1. Configuración de la página web
 st.set_page_config(page_title="Optimizador Inmobiliario", page_icon="🏡", layout="wide")
-
 st.title("🏡 Optimizador Inmobiliario")
 st.markdown("### Sistema Experto de Búsqueda de Primera Vivienda")
 st.markdown("Definí tus criterios en el menú lateral y nuestro motor de inferencia filtrará las mejores opciones del mercado.")
