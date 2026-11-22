@@ -5,7 +5,7 @@ from streamlit_folium import st_folium
 
 # 1. Configuración de la página web
 st.set_page_config(page_title="Optimizador Inmobiliario", page_icon="🏡", layout="wide")
-st.title("🏡 Optimizador Inmobiliario")
+st.title("Optimizador Inmobiliario")
 st.markdown("### Sistema Experto de Búsqueda de Primera Vivienda")
 st.markdown("Definí tus criterios en el menú lateral y nuestro motor de inferencia filtrará las mejores opciones del mercado.")
 
@@ -30,7 +30,7 @@ def cargar_datos():
 df_limpio = cargar_datos()
 
 # 3. Interfaz del Menú Lateral
-st.sidebar.header("🔍 Filtros del Sistema Experto")
+st.sidebar.header("Filtros del Sistema Experto")
 
 opcion_tipo = st.sidebar.selectbox(
     "1. ¿Qué tipo de propiedad buscas?",
@@ -79,12 +79,12 @@ if st.session_state.get('buscar', False):
         df_filtrado = df_filtrado[~df_filtrado['place_with_parent_names'].str.contains(excluir, case=False, na=False)]
 
     # 5. Mostrar Resultados
-    st.subheader(f"✅ Propiedades que cumplen con las reglas: {len(df_filtrado)}")
+    st.subheader(f"Propiedades que cumplen con las reglas: {len(df_filtrado)}")
 
     if len(df_filtrado) > 0:
         df_filtrado = df_filtrado.sort_values(by=['surface_total_in_m2', 'price_aprox_usd'], ascending=False)
         
-        st.markdown("#### 🏆 Top 5 de opciones recomendadas:")
+        st.markdown("#### Top 5 de opciones recomendadas:")
         columnas_mostrar = ['property_type', 'price_aprox_usd', 'surface_total_in_m2', 'rooms', 'place_with_parent_names']
         vista_top5 = df_filtrado[columnas_mostrar].head(5).copy()
         vista_top5['price_aprox_usd'] = vista_top5['price_aprox_usd'].apply(lambda x: f"USD {x:,.0f}")
