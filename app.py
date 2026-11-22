@@ -112,7 +112,7 @@ ambientes = st.sidebar.number_input(
 barrio = st.sidebar.text_input("Barrio o zona (Opcional)", placeholder="Ej: Villa Luro, Palermo...")
 excluir = st.sidebar.text_input("Excluir zona (Opcional)", placeholder="Ej: Centro...")
 
-if st.sidebar.button("Buscar Propiedades: "):
+if st.sidebar.button("Buscar Propiedades"):
     st.session_state['buscar'] = True
 
 # 5. Motor de Inferencia y Visualización
