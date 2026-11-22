@@ -9,7 +9,7 @@ from streamlit_folium import st_folium
 # 1. Configuración de la página
 st.set_page_config(page_title="Optimizador Inmobiliario", page_icon="🏡", layout="wide")
 
-# 2. CSS personalizado (animación suave, tarjetas KPI y limpieza visual)
+# 2. CSS personalizado
 st.markdown("""
     <style>
     [data-testid="stToolbar"] {visibility: hidden;}
@@ -22,11 +22,13 @@ st.markdown("""
     }
 
     h1 {
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+    h1 span {
         background: linear-gradient(90deg, #00C49A, #38BDF8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        margin-bottom: 0;
     }
 
     /* Tarjetas de métricas (KPIs) */
@@ -65,8 +67,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Encabezado compacto
-st.title("🏡 Optimizador Inmobiliario")
+# Encabezado con emoji a color y texto degradado
+st.markdown('<h1><span>Optimizador Inmobiliario</span></h1>', unsafe_allow_html=True)
 st.caption("Sistema Experto de recomendación y georreferenciación de propiedades")
 
 # 3. Carga de datos
@@ -90,7 +92,7 @@ def cargar_datos():
 df_limpio = cargar_datos()
 
 # 4. Menú Lateral
-st.sidebar.header("🔍 Filtros de Búsqueda")
+st.sidebar.header("Filtros de Búsqueda")
 
 opcion_tipo = st.sidebar.selectbox(
     "Tipo de propiedad",
@@ -110,7 +112,7 @@ ambientes = st.sidebar.number_input(
 barrio = st.sidebar.text_input("Barrio o zona (Opcional)", placeholder="Ej: Villa Luro, Palermo...")
 excluir = st.sidebar.text_input("Excluir zona (Opcional)", placeholder="Ej: Centro...")
 
-if st.sidebar.button("Buscar Propiedades 🚀"):
+if st.sidebar.button("Buscar Propiedades: "):
     st.session_state['buscar'] = True
 
 # 5. Motor de Inferencia y Visualización
@@ -171,18 +173,19 @@ if st.session_state.get('buscar', True):
                         mapa_propiedades = folium.Map(
                             location=[df_mapa['lat'].mean(), df_mapa['lon'].mean()],
                             zoom_start=12,
-                            tiles='CartoDB dark_matter'
+                            tiles='Esri.WorldStreetMap'
                         )
                         for _, row in df_mapa.iterrows():
                             popup_texto = f"<b>{row['property_type'].upper()}</b><br>USD {row['price_aprox_usd']:,.0f}<br>{row['surface_total_in_m2']} m²"
                             folium.CircleMarker(
                                 location=[row['lat'], row['lon']],
-                                radius=6,
+                                radius=7,
                                 popup=popup_texto,
-                                color='#00C49A',
+                                color='#0B0F19',
+                                weight=1.5,
                                 fill=True,
                                 fill_color='#00C49A',
-                                fill_opacity=0.75
+                                fill_opacity=0.9
                             ).add_to(mapa_propiedades)
 
                         st_folium(mapa_propiedades, height=390, use_container_width=True, returned_objects=[])
@@ -190,11 +193,10 @@ if st.session_state.get('buscar', True):
                         st.info("Sin coordenadas válidas para graficar en esta búsqueda.")
 
             with col_tabla:
-                st.markdown("**🏆 Top 5 Mejores Opciones**")
+                st.markdown("**Top 5 Mejores Opciones**")
                 df_filtrado = df_filtrado.sort_values(by=['surface_total_in_m2', 'price_aprox_usd'], ascending=False)
                 vista = df_filtrado[['property_type', 'price_aprox_usd', 'surface_total_in_m2', 'rooms', 'place_with_parent_names']].head(5).copy()
 
-                # Limpieza visual de textos y números
                 nombres_tipo = {'apartment': 'Depto', 'house': 'Casa', 'PH': 'PH', 'store': 'Local'}
                 vista['property_type'] = vista['property_type'].map(nombres_tipo).fillna(vista['property_type'])
                 vista['price_aprox_usd'] = vista['price_aprox_usd'].apply(lambda x: f"USD {x:,.0f}")
