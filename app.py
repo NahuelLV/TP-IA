@@ -5,6 +5,42 @@ from streamlit_folium import st_folium
 
 # 1. Configuración de la página web
 st.set_page_config(page_title="Optimizador Inmobiliario", page_icon="🏡", layout="wide")
+st.markdown("""
+    <style>
+    /* Oculta la barra de opciones superior derecha de Streamlit sin romper el botón del menú lateral */
+    [data-testid="stToolbar"] {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Reduce el espacio vacío de arriba para aprovechar mejor la pantalla */
+    .block-container {
+        padding-top: 2rem;
+    }
+
+    /* Degradado en el título principal */
+    h1 {
+        background: linear-gradient(90deg, #00C49A, #38BDF8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+
+    /* Botón de búsqueda ancho completo, redondeado y con efecto al pasar el mouse */
+    div.stButton > button:first-child {
+        background: linear-gradient(90deg, #00C49A 0%, #0284C7 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        width: 100%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    div.stButton > button:first-child:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0, 196, 154, 0.4);
+    }
+    </style>
+""", unsafe_allow_html=True)
 st.title("Optimizador Inmobiliario")
 st.markdown("### Sistema Experto de Búsqueda de Primera Vivienda")
 st.markdown("Definí tus criterios en el menú lateral y nuestro motor de inferencia filtrará las mejores opciones del mercado.")
