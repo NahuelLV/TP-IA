@@ -1,0 +1,31 @@
+name: Mantener Streamlit Activo
+
+on:
+  schedule:
+    - cron: '0 */8 * * *' # Se ejecuta automáticamente cada 8 horas
+  workflow_dispatch: # Permite ejecutarlo manualmente para probar
+
+jobs:
+  mantener-activo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Instalar navegador virtual
+        run: |
+          pip install playwright
+          playwright install chromium
+
+      - name: Visitar y reactivar la web
+        shell: python
+        run: |
+          from playwright.sync_api import sync_playwright
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto("https://chequearpropiedades.streamlit.app", timeout=60000)
+              page.wait_for_timeout(10000)
+              boton = page.locator("button:has-text('get this app back up'), button:has-text('poner en marcha')")
+              if boton.count() > 0:
+                  boton.first.click()
+                  page.wait_for_timeout(20000)
+              browser.close()
